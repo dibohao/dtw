@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+dtw_workmanship_manger,dtw.workmanship.manager,dtw.model_dtw_workmanship,,1,1,1,1
+dtw_workmanshipmain_manger,dtw.workmanship.main.manager,dtw.model_dtw_workmanship_main,,1,1,1,1
+dtw_workdata_manger,dtw.workdata.manager,dtw.model_dtw_workdata,,1,1,1,1
+dtw_operator_manager,dtw.operator.manager,dtw.model_dtw_operator,,1,1,1,1
+dtw_workposition_manager,dtw.workposition.manager,dtw.model_dtw_workposition,,1,1,1,1

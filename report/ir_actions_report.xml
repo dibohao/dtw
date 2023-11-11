@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_workmanship" model="ir.actions.report">
+        <field name="name">打印工艺配置</field>
+        <field name="model">dtw.workmanship</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dtw.report_workmanship</field>
+        <field name="report_file">dtw.report_workmanship</field>
+        <!-- <field name="print_report_name">(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)</field> -->
+        <field name="binding_model_id" ref="model_dtw_workmanship"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>    

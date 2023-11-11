@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<data>
+    <record id="dtw_data_action" model="ir.actions.act_window">
+        <field name="name">工作数据</field>
+        <field name="res_model">dtw.workdata</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="dtw_data_workmanship_action" model="ir.actions.act_window">
+        <field name="name">工单数据</field>
+        <field name="res_model">dtw.workmanship</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="dtw.workmanship_view_search" />
+        <!-- <field name="views" eval="[(ref('dtw.workmanship_view_list_inherit'),'tree'), (False,'form')]" /> -->
+    </record>
+    <record id="dtw_workmanship_main_action" model="ir.actions.act_window">
+        <field name="name">工单</field>
+        <field name="res_model">dtw.workmanship.main</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="dtw_operator_action" model="ir.actions.act_window">
+        <field name="name">人员配置</field>
+        <field name="res_model">dtw.operator</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <record id="dtw_workposition_action" model="ir.actions.act_window">
+        <field name="name">工位配置</field>
+        <field name="res_model">dtw.workposition</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="dtw_root" name="数字扭力扳手管理" >
+        <menuitem id="dtw_data_menu" name="数据" sequence="10"> 
+            <menuitem id="dtw_data" name="工作数据"
+                action="dtw_data_action"
+                sequence="10"
+            />
+            <menuitem id="dtw_data_workmanship" name="工单数据"
+                action="dtw_data_workmanship_action"
+                sequence="20"
+            />
+        </menuitem>    
+        <!-- <menuitem id="dtw_workmanship_main_menu" name="工单" sequence="20"> 
+        </menuitem> -->
+        <menuitem id="dtw_config" name="配置" sequence="30" > 
+            <menuitem id="dtw_workmanship_main" name="工单配置"
+                action="dtw_workmanship_main_action"
+                sequence="5"
+            />
+            <menuitem id="dtw_operator" name="操作人员"
+                action="dtw_operator_action"
+                sequence="20"
+            />
+            <menuitem id="dtw_workposition" name="工位维护"
+                action="dtw_workposition_action"
+                sequence="10"
+            />
+        </menuitem>
+    </menuitem> 
+</data>
+</odoo>
