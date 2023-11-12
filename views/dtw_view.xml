@@ -218,7 +218,7 @@
             <field name="name" />
             <field name="login" />
             <field name="mobile" />
-            <field name="password" />
+            <field name="password" invisible="1" />
             <field name="company_id" />
         </tree>
         </field>
@@ -231,16 +231,16 @@
         <sheet>
         <div>
             <h3>选择用户：</h3>
-            <field name='user_id' />
+            <field name='user_id' domain="[('share','=',False)]" />
         </div>
         <group id="m">
             <group id="l">
+            <field name="password"  />
             <field name="name" />
-            <field name="login" />
             </group>
             <group>
+            <field name="login" />
             <field name="mobile" />
-            <field name="password" />
             </group>
         </group>    
         </sheet>

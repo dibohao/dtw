@@ -2,6 +2,7 @@
 from odoo import api, fields, models,_
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import AccessError, UserError, ValidationError
+from passlib.context import CryptContext
 
 class Workposition(models.Model):
     _name="dtw.workposition"
@@ -132,24 +133,24 @@ class Operator(models.Model):
     name=fields.Char("姓名",related='user_id.partner_id.name',store=True)
     login=fields.Char('登录名',related='user_id.login',store=True)
     password=fields.Char('密码',related='user_id.password',store=True)
+    password=fields.Char('密码')
     company_id = fields.Many2one('res.company', related='user_id.company_id',store=True)
     mobile=fields.Char('手机',related="user_id.partner_id.mobile",store=True)
 
+    # 从odoo中获取密码，但是因为加密过了(PBKDF2_SHA-512,https://www.dcode.fr/pbkdf2-hash)
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            user_id=vals['user_id']
+            cr=self.env.cr    
+            cr.execute("""
+            SELECT id, password FROM res_users
+            WHERE password IS NOT NULL and id=%s
+            """, (user_id,)) 
+            if self.env.cr.rowcount:
+                # Users = self.sudo()
+                pw=cr.fetchall()[0][1]
+                if not vals.get('password',False):
+                    vals['password']= pw
+        return super().create(vals_list)
 
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #     for vals in vals_list:
-    #         password=vals.get('password',False)
-    #         if not password:
-    #             vals['password']=''
-    #         user_id=vals['user_id']
-    #         vals['password']= self.env['res.users'].browse([user_id]).password
-    #     return super().create(vals_list)
-
-
-
-
-
-class Users(models.Model):
-    _inherit="res.users"
-    password = fields.Char(copy=False)        
