@@ -64,7 +64,9 @@
         <field name="name">工单配置_tree</field>
         <field name="model">dtw.workmanship.main</field>
         <field name="arch" type="xml">
-        <tree> 
+        <tree decoration-info='dispatch' decoration-it="dispatched"> 
+            <field name="dispatch" invisible="1" />
+            <field name="dispatched" invisible="1" />
             <field name="name" />
             <field name="datetime_mainship" />
             <field name="remark" />
@@ -76,7 +78,9 @@
         <field name="name">工单明细_tree</field>
         <field name="model">dtw.workmanship</field>
         <field name="arch" type="xml">
-        <tree edit="0" create="0">
+        <tree edit="0" create="0" decoration-info="dispatch" decoration-it="dispatched">
+            <field name="dispatch" invisible="1" />
+            <field name="dispatched" invisible="1" />
             <field name="name" />
             <field name="main_id" />
             <field name="workposition_id" />

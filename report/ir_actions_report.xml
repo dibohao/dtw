@@ -11,4 +11,14 @@
         <field name="binding_model_id" ref="model_dtw_workmanship"/>
         <field name="binding_type">report</field>
     </record>
+    <record model="ir.actions.server" id="dipatch_workmanship_main">
+        <field name="name">下发工单</field>
+        <field name="model_id" ref="dtw.model_dtw_workmanship_main"/>
+        <field name="binding_model_id" ref="dtw.model_dtw_workmanship_main"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+           action = model.update_dispatch()
+        </field>
+</record>
 </odoo>    

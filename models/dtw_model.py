@@ -21,7 +21,6 @@ class WorkmanshipMain(models.Model):
     _description="工单"
     _rec_name="name"
 
-    # name=fields.Char('工单名称',required="1")
     name = fields.Char(
         string="工单号",
         required=True, copy=False, readonly=True,
@@ -32,6 +31,8 @@ class WorkmanshipMain(models.Model):
     workmanship_ids=fields.One2many('dtw.workmanship','main_id',string='工单明细')
     company_id = fields.Many2one('res.company',  default=lambda self: self.env.user.company_id)
     user_id = fields.Many2one('res.users', default=lambda self: self.env.user.user_id)
+    dispatch = fields.Boolean('可下发的工单',default=False)
+    dispatched = fields.Boolean('已经下发的工单',default=False)
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -58,6 +59,17 @@ class WorkmanshipMain(models.Model):
                 vals['name'] = seq.next_by_code('dtw.workmanship.main.%s' % vals['company_id']) or _("New")
         return super().create(vals_list)
 
+    def update_dispatch(self):
+        active_list=self.env.context['active_ids']
+        active_model=self.env.context['active_model']
+        #还原所有即disptch=False
+        for r in self.env[active_model].search([('dispatch','=',True)]):
+            r.dispatched=r.dispatch
+            r.dispatch=False
+        #只设置选中的    
+        for r in self.env[active_model].browse(active_list):
+            r.dispatch=True
+
 class Workmanship(models.Model):
     _name="dtw.workmanship"
     _description="工单明细"
@@ -74,6 +86,9 @@ class Workmanship(models.Model):
     angle=fields.Float('角度',digits='Product Unit of Measure',default=0)
     barcode = fields.Char('Barcode',compute="_compute_barcode")
     company_id = fields.Many2one('res.company', related="main_id.company_id",store=True)
+    dispatch = fields.Boolean('可下发的工单',related='main_id.dispatch')
+    dispatched = fields.Boolean('已经下发的工单',related='main_id.dispatched')
+
     def name_get(self):
         result=[]
         for record in self:
@@ -132,7 +147,7 @@ class Operator(models.Model):
     user_id=fields.Many2one('res.users',string='odoo用户')
     name=fields.Char("姓名",related='user_id.partner_id.name',store=True)
     login=fields.Char('登录名',related='user_id.login',store=True)
-    password=fields.Char('密码',related='user_id.password',store=True)
+    # password=fields.Char('密码',related='user_id.password',store=True)
     password=fields.Char('密码')
     company_id = fields.Many2one('res.company', related='user_id.company_id',store=True)
     mobile=fields.Char('手机',related="user_id.partner_id.mobile",store=True)
