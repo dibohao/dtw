@@ -7,18 +7,31 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">dtw.report_workmanship</field>
         <field name="report_file">dtw.report_workmanship</field>
-        <!-- <field name="print_report_name">(object.state in ('draft', 'sent') and 'Quotation - %s' % (object.name)) or 'Order - %s' % (object.name)</field> -->
         <field name="binding_model_id" ref="model_dtw_workmanship"/>
         <field name="binding_type">report</field>
     </record>
     <record model="ir.actions.server" id="dipatch_workmanship_main">
         <field name="name">下发工单</field>
-        <field name="model_id" ref="dtw.model_dtw_workmanship_main"/>
+        <!-- 下面设置的model_id是为了action执行该model下定代码  -->
+        <!-- 下面设置的binding_model_id是为了在该model下可见这个action提示，且self.env.context返回的model也是这个  -->
+        <field name="model_id" ref="dtw.model_dtw_workmanship_main"/> 
         <field name="binding_model_id" ref="dtw.model_dtw_workmanship_main"/>
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">
            action = model.update_dispatch()
         </field>
-</record>
+    </record>
+    <record model="ir.actions.server" id="dipatch_workmanship">
+        <field name="name">下发工单</field>
+        <!-- 下面设置的model_id是为了action执行该model下定代码  -->
+        <!-- 下面设置的binding_model_id是为了在该model下可见这个action提示，且self.env.context返回的model也是这个  -->
+        <field name="model_id" ref="dtw.model_dtw_workmanship_main"/> 
+        <field name="binding_model_id" ref="dtw.model_dtw_workmanship"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+           action = model.update_dispatch()
+        </field>
+    </record>
 </odoo>    

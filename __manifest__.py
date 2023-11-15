@@ -2,14 +2,14 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 {
     'name': '数字扭力扳手管理',
-    'category': 'torkwrench',
+    'category': '数字扭力扳手管理',
     'summary': '数字扭力扳手管理模块',
     'version': '16.0',
     'website': '',
     'author': 'dibohao',
     'depends': ['base'],
     'data': [
-        # 'security/changxin_base_groups.xml',
+        'security/dtw_groups.xml',
         'security/ir.model.access.csv',
         'views/menu_action.xml',
         'views/dtw_view.xml',

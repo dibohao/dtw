@@ -62,9 +62,11 @@ class WorkmanshipMain(models.Model):
     def update_dispatch(self):
         active_list=self.env.context['active_ids']
         active_model=self.env.context['active_model']
-        #还原所有即disptch=False
-        for r in self.env[active_model].search([('dispatch','=',True)]):
+        #将所有已经下发的部分设置到dispatched,然后还原dispatch=false
+        records=self.env[active_model].search([('dispatch','=',True)])
+        for r in records:
             r.dispatched=r.dispatch
+        for r in records:
             r.dispatch=False
         #只设置选中的    
         for r in self.env[active_model].browse(active_list):
@@ -86,8 +88,14 @@ class Workmanship(models.Model):
     angle=fields.Float('角度',digits='Product Unit of Measure',default=0)
     barcode = fields.Char('Barcode',compute="_compute_barcode")
     company_id = fields.Many2one('res.company', related="main_id.company_id",store=True)
-    dispatch = fields.Boolean('可下发的工单',related='main_id.dispatch')
-    dispatched = fields.Boolean('已经下发的工单',related='main_id.dispatched')
+    dispatch = fields.Boolean('可下发的工单',related='main_id.dispatch',inverse="_inverse_dispatch")
+    dispatched = fields.Boolean('已经下发的工单',related='main_id.dispatched',inverse="_inverse_dispatched")
+    #在明细中的设置，需要设置到工单上
+    def _inverse_dispatch(self):
+        self.main_id.dispatch=self.dispatch
+    def _inverse_dispatched(self):
+        self.main_id.dispatched=self.dispatched
+
 
     def name_get(self):
         result=[]
@@ -147,25 +155,34 @@ class Operator(models.Model):
     user_id=fields.Many2one('res.users',string='odoo用户')
     name=fields.Char("姓名",related='user_id.partner_id.name',store=True)
     login=fields.Char('登录名',related='user_id.login',store=True)
-    # password=fields.Char('密码',related='user_id.password',store=True)
     password=fields.Char('密码')
     company_id = fields.Many2one('res.company', related='user_id.company_id',store=True)
     mobile=fields.Char('手机',related="user_id.partner_id.mobile",store=True)
 
     # 从odoo中获取密码，但是因为加密过了(PBKDF2_SHA-512,https://www.dcode.fr/pbkdf2-hash)
+    # 所以将设置的密码覆盖掉odoo用户的密码
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             user_id=vals['user_id']
-            cr=self.env.cr    
-            cr.execute("""
-            SELECT id, password FROM res_users
-            WHERE password IS NOT NULL and id=%s
-            """, (user_id,)) 
-            if self.env.cr.rowcount:
-                # Users = self.sudo()
-                pw=cr.fetchall()[0][1]
-                if not vals.get('password',False):
-                    vals['password']= pw
+            self.env['res.users'].browse(user_id).sudo().password=vals['password'] #覆盖odoo用户密码   
+
+            # cr=self.env.cr    
+            # cr.execute("""
+            # SELECT id, password FROM res_users
+            # WHERE password IS NOT NULL and id=%s
+            # """, (user_id,)) 
+            # if self.env.cr.rowcount:
+            #     pw=cr.fetchall()[0][1]
+            #     if not vals.get('password',False):
+            #         vals['password']= pw
+            #     else:
+            #         self.env['res.users'].browse(user_id).password=vals['password']    
         return super().create(vals_list)
+    
+    def write(self,value):
+        if 'password' in value:
+            self.user_id.sudo().password=value['password'] #覆盖odoo用户密码   
+        return super().write(value)
+
 

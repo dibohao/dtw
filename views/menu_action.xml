@@ -29,7 +29,7 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="dtw_root" name="数字扭力扳手管理" >
+    <menuitem id="dtw_root" name="数字扭力扳手管理" groups="dtw.group_dtw_operator">
         <menuitem id="dtw_data_menu" name="数据" sequence="10"> 
             <menuitem id="dtw_data" name="工作数据"
                 action="dtw_data_action"
@@ -40,8 +40,6 @@
                 sequence="20"
             />
         </menuitem>    
-        <!-- <menuitem id="dtw_workmanship_main_menu" name="工单" sequence="20"> 
-        </menuitem> -->
         <menuitem id="dtw_config" name="配置" sequence="30" > 
             <menuitem id="dtw_workmanship_main" name="工单配置"
                 action="dtw_workmanship_main_action"

@@ -222,7 +222,7 @@
             <field name="name" />
             <field name="login" />
             <field name="mobile" />
-            <field name="password" invisible="1" />
+            <field name="password"  password="1" />
             <field name="company_id" />
         </tree>
         </field>
@@ -239,7 +239,7 @@
         </div>
         <group id="m">
             <group id="l">
-            <field name="password"  />
+            <field name="password"  required="1"  password="1" />
             <field name="name" />
             </group>
             <group>
