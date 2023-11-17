@@ -156,7 +156,8 @@ class Operator(models.Model):
     name=fields.Char("姓名",related='user_id.partner_id.name',store=True)
     login=fields.Char('登录名',related='user_id.login',store=True)
     password=fields.Char('密码')
-    company_id = fields.Many2one('res.company', related='user_id.company_id',store=True)
+    company_id = fields.Many2one('res.company', related='user_id.company_id')
+    # company_name = fields.Char('res.company',related="company_id.name")
     mobile=fields.Char('手机',related="user_id.partner_id.mobile",store=True)
 
     # 从odoo中获取密码，但是因为加密过了(PBKDF2_SHA-512,https://www.dcode.fr/pbkdf2-hash)

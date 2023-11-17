@@ -35,7 +35,7 @@
                 action="dtw_data_action"
                 sequence="10"
             />
-            <menuitem id="dtw_data_workmanship" name="工单数据"
+            <menuitem id="dtw_data_workmanship" name="工单明细"
                 action="dtw_data_workmanship_action"
                 sequence="20"
             />

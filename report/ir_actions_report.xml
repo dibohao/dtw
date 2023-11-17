@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
     <record id="action_report_workmanship" model="ir.actions.report">
-        <field name="name">打印工艺配置</field>
+        <field name="name">打印工单明细</field>
         <field name="model">dtw.workmanship</field>
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">dtw.report_workmanship</field>
@@ -10,10 +9,19 @@
         <field name="binding_model_id" ref="model_dtw_workmanship"/>
         <field name="binding_type">report</field>
     </record>
+    <record id="action_report_workmanship_main" model="ir.actions.report">
+        <field name="name">打印工单</field>
+        <field name="model">dtw.workmanship.main</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">dtw.report_workmanship_main</field>
+        <field name="report_file">dtw.report_workmanship_main</field>
+        <field name="binding_model_id" ref="model_dtw_workmanship_main"/>
+        <field name="binding_type">report</field>
+    </record>
     <record model="ir.actions.server" id="dipatch_workmanship_main">
         <field name="name">下发工单</field>
         <!-- 下面设置的model_id是为了action执行该model下定代码  -->
-        <!-- 下面设置的binding_model_id是为了在该model下可见这个action提示，且self.env.context返回的model也是这个  -->
+        <!-- 下面设置的binding_model_id是为了在该model下可见这个action提示，且self.env.context返回的model也是这个.model_id是action方法的位置  -->
         <field name="model_id" ref="dtw.model_dtw_workmanship_main"/> 
         <field name="binding_model_id" ref="dtw.model_dtw_workmanship_main"/>
         <field name="binding_view_types">list</field>
@@ -25,7 +33,7 @@
     <record model="ir.actions.server" id="dipatch_workmanship">
         <field name="name">下发工单</field>
         <!-- 下面设置的model_id是为了action执行该model下定代码  -->
-        <!-- 下面设置的binding_model_id是为了在该model下可见这个action提示，且self.env.context返回的model也是这个  -->
+        <!-- 下面设置的binding_model_id是为了在该model下可见这个action提示，且self.env.context返回的model也是这个.model_id是action方法的位置  -->
         <field name="model_id" ref="dtw.model_dtw_workmanship_main"/> 
         <field name="binding_model_id" ref="dtw.model_dtw_workmanship"/>
         <field name="binding_view_types">list</field>

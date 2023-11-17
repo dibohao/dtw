@@ -224,6 +224,7 @@
             <field name="mobile" />
             <field name="password"  password="1" />
             <field name="company_id" />
+            <!-- <field name="company_name" /> -->
         </tree>
         </field>
     </record>        
