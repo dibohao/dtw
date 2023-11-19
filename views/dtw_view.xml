@@ -178,7 +178,7 @@
             <field name="real_angle" />
             <field name="operator_id" />
             <field name="wrench_identity" />
-            <!-- <field name="company_id" /> -->
+            <field name="company_id" />
             <field name="remark" />
         </tree>
         </field>
@@ -214,7 +214,7 @@
         </form>
         </field>
     </record>
-    <record id="operator_view_list" model="ir.ui.view">
+    <!-- <record id="operator_view_list" model="ir.ui.view">
         <field name="name">人员配置_tree</field>
         <field name="model">dtw.operator</field>
         <field name="arch" type="xml">
@@ -224,11 +224,10 @@
             <field name="mobile" />
             <field name="password"  password="1" />
             <field name="company_id" />
-            <!-- <field name="company_name" /> -->
         </tree>
         </field>
-    </record>        
-    <record id="operator_view_form" model="ir.ui.view">
+    </record>         -->
+    <!-- <record id="operator_view_form" model="ir.ui.view">
         <field name="name">人员配置_form</field>
         <field name="model">dtw.operator</field>
         <field name="arch" type="xml">
@@ -251,7 +250,7 @@
         </sheet>
         </form>
         </field>
-    </record>        
+    </record>         -->
     <record id="workposition_view_list" model="ir.ui.view">
         <field name="name">工位配置_tree</field>
         <field name="model">dtw.workposition</field>

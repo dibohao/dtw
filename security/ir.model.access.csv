@@ -2,11 +2,9 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 dtw_workmanship_manger,dtw.workmanship.manager,dtw.model_dtw_workmanship,dtw.group_dtw_manager,1,1,1,1
 dtw_workmanshipmain_manger,dtw.workmanship.main.manager,dtw.model_dtw_workmanship_main,dtw.group_dtw_manager,1,1,1,1
 dtw_workdata_manger,dtw.workdata.manager,dtw.model_dtw_workdata,dtw.group_dtw_manager,1,1,1,1
-dtw_operator_manager,dtw.operator.manager,dtw.model_dtw_operator,dtw.group_dtw_manager,1,1,1,1
 dtw_workposition_manager,dtw.workposition.manager,dtw.model_dtw_workposition,dtw.group_dtw_manager,1,1,1,1
 
 dtw_workmanship_operator,dtw.workmanship.operator,dtw.model_dtw_workmanship,dtw.group_dtw_operator,1,0,0,0
 dtw_workmanshipmain_operator,dtw.workmanship.main.operator,dtw.model_dtw_workmanship_main,dtw.group_dtw_operator,1,0,0,0
-dtw_workdata_operator,dtw.workdata.operator,dtw.model_dtw_workdata,dtw.group_dtw_operator,1,0,0,0
-dtw_operator_operator,dtw.operator.operator,dtw.model_dtw_operator,dtw.group_dtw_operator,1,0,0,0
-dtw_workposition_operator,dtw.workposition.operator,dtw.model_dtw_workposition,dtw.group_dtw_operator,1,0,0,0
+dtw_workdata_operator,dtw.workdata.operator,dtw.model_dtw_workdata,dtw.group_dtw_operator,0,0,0,0
+dtw_workposition_operator,dtw.workposition.operator,dtw.model_dtw_workposition,dtw.group_dtw_operator,0,0,0,0

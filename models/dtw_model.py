@@ -27,7 +27,7 @@ class WorkmanshipMain(models.Model):
         index='trigram',
         default=lambda self: _('New'))
     datetime_mainship=fields.Datetime('工单日期',default=fields.Datetime.now())
-    remark=fields.Text('说明')
+    remark=fields.Char('说明')
     workmanship_ids=fields.One2many('dtw.workmanship','main_id',string='工单明细')
     company_id = fields.Many2one('res.company',  default=lambda self: self.env.user.company_id)
     user_id = fields.Many2one('res.users', default=lambda self: self.env.user.user_id)
@@ -125,7 +125,8 @@ class Workdata(models.Model):
     _order="datetime_work desc"
     workmanship_id=fields.Many2one('dtw.workmanship',string="工艺号",ondelete="restrict")
     datetime_work=fields.Datetime('操作时间')
-    operator_id=fields.Many2one('dtw.operator',string="操作人员",ondelete="restrict")
+    # operator_id=fields.Many2one('dtw.operator',string="操作人员",ondelete="restrict")
+    operator_id=fields.Many2one('res.users',string="操作人员",ondelete="restrict",default=lambda self:self.env.uid)
     real_tork=fields.Float(string='实际值')
     real_angle=fields.Float('实际角度值')
     wrench_identity=fields.Char('扳手标识')
@@ -139,7 +140,7 @@ class Workdata(models.Model):
     max_tork=fields.Float(string='允许最大值',related="workmanship_id.max_tork",store=True)
     flag=fields.Boolean('超差',default=False,compute='_compute_flag',store=True)
     angle=fields.Float('目标角度值',related="workmanship_id.angle",store=True)    
-    company_id = fields.Many2one('res.company', ondelete="restrict")
+    company_id = fields.Many2one('res.company', ondelete="restrict",default=lambda self:self.env.user.company_id)
     remark=fields.Char("说明")
     @api.depends('min_tork','max_tork','real_tork')
     def _compute_flag(self):
@@ -149,41 +150,40 @@ class Workdata(models.Model):
             else:
                 r.flag=False
     
-class Operator(models.Model):
-    _name="dtw.operator"
-    _description="人员信息"
-    user_id=fields.Many2one('res.users',string='odoo用户')
-    name=fields.Char("姓名",related='user_id.partner_id.name',store=True)
-    login=fields.Char('登录名',related='user_id.login',store=True)
-    password=fields.Char('密码')
-    company_id = fields.Many2one('res.company', related='user_id.company_id')
-    # company_name = fields.Char('res.company',related="company_id.name")
-    mobile=fields.Char('手机',related="user_id.partner_id.mobile",store=True)
+# class Operator(models.Model):
+#     _name="dtw.operator"
+#     _description="人员信息"
+#     user_id=fields.Many2one('res.users',string='odoo用户')
+#     name=fields.Char("姓名",related='user_id.partner_id.name',store=True)
+#     login=fields.Char('登录名',related='user_id.login',store=True)
+#     password=fields.Char('密码')
+#     company_id = fields.Many2one('res.company', related='user_id.company_id')
+#     mobile=fields.Char('手机',related="user_id.partner_id.mobile",store=True)
 
-    # 从odoo中获取密码，但是因为加密过了(PBKDF2_SHA-512,https://www.dcode.fr/pbkdf2-hash)
-    # 所以将设置的密码覆盖掉odoo用户的密码
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            user_id=vals['user_id']
-            self.env['res.users'].browse(user_id).sudo().password=vals['password'] #覆盖odoo用户密码   
+#     # 从odoo中获取密码，但是因为加密过了(PBKDF2_SHA-512,https://www.dcode.fr/pbkdf2-hash)
+#     # 所以将设置的密码覆盖掉odoo用户的密码
+#     @api.model_create_multi
+#     def create(self, vals_list):
+#         for vals in vals_list:
+#             user_id=vals['user_id']
+#             self.env['res.users'].browse(user_id).sudo().password=vals['password'] #覆盖odoo用户密码   
 
-            # cr=self.env.cr    
-            # cr.execute("""
-            # SELECT id, password FROM res_users
-            # WHERE password IS NOT NULL and id=%s
-            # """, (user_id,)) 
-            # if self.env.cr.rowcount:
-            #     pw=cr.fetchall()[0][1]
-            #     if not vals.get('password',False):
-            #         vals['password']= pw
-            #     else:
-            #         self.env['res.users'].browse(user_id).password=vals['password']    
-        return super().create(vals_list)
+#             # cr=self.env.cr    
+#             # cr.execute("""
+#             # SELECT id, password FROM res_users
+#             # WHERE password IS NOT NULL and id=%s
+#             # """, (user_id,)) 
+#             # if self.env.cr.rowcount:
+#             #     pw=cr.fetchall()[0][1]
+#             #     if not vals.get('password',False):
+#             #         vals['password']= pw
+#             #     else:
+#             #         self.env['res.users'].browse(user_id).password=vals['password']    
+#         return super().create(vals_list)
     
-    def write(self,value):
-        if 'password' in value:
-            self.user_id.sudo().password=value['password'] #覆盖odoo用户密码   
-        return super().write(value)
+#     def write(self,value):
+#         if 'password' in value:
+#             self.user_id.sudo().password=value['password'] #覆盖odoo用户密码   
+#         return super().write(value)
 
 

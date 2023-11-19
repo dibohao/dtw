@@ -18,11 +18,11 @@
         <field name="res_model">dtw.workmanship.main</field>
         <field name="view_mode">tree,form</field>
     </record>
-    <record id="dtw_operator_action" model="ir.actions.act_window">
+    <!-- <record id="dtw_operator_action" model="ir.actions.act_window">
         <field name="name">人员配置</field>
         <field name="res_model">dtw.operator</field>
         <field name="view_mode">tree,form</field>
-    </record>
+    </record> -->
     <record id="dtw_workposition_action" model="ir.actions.act_window">
         <field name="name">工位配置</field>
         <field name="res_model">dtw.workposition</field>
@@ -45,10 +45,10 @@
                 action="dtw_workmanship_main_action"
                 sequence="5"
             />
-            <menuitem id="dtw_operator" name="操作人员"
+            <!-- <menuitem id="dtw_operator" name="操作人员"
                 action="dtw_operator_action"
                 sequence="20"
-            />
+            /> -->
             <menuitem id="dtw_workposition" name="工位维护"
                 action="dtw_workposition_action"
                 sequence="10"
