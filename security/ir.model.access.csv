@@ -3,8 +3,12 @@ dtw_workmanship_manger,dtw.workmanship.manager,dtw.model_dtw_workmanship,dtw.gro
 dtw_workmanshipmain_manger,dtw.workmanship.main.manager,dtw.model_dtw_workmanship_main,dtw.group_dtw_manager,1,1,1,1
 dtw_workdata_manger,dtw.workdata.manager,dtw.model_dtw_workdata,dtw.group_dtw_manager,1,1,1,1
 dtw_workposition_manager,dtw.workposition.manager,dtw.model_dtw_workposition,dtw.group_dtw_manager,1,1,1,1
+dtw_worktype_manger,dtw.worktype.manager,dtw.model_dtw_worktype,dtw.group_dtw_operator,1,1,1,1
 
 dtw_workmanship_operator,dtw.workmanship.operator,dtw.model_dtw_workmanship,dtw.group_dtw_operator,1,0,0,0
 dtw_workmanshipmain_operator,dtw.workmanship.main.operator,dtw.model_dtw_workmanship_main,dtw.group_dtw_operator,1,0,0,0
-dtw_workdata_operator,dtw.workdata.operator,dtw.model_dtw_workdata,dtw.group_dtw_operator,0,0,0,0
-dtw_workposition_operator,dtw.workposition.operator,dtw.model_dtw_workposition,dtw.group_dtw_operator,0,0,0,0
+dtw_workdata_operator,dtw.workdata.operator,dtw.model_dtw_workdata,dtw.group_dtw_operator,1,0,1,0
+dtw_workposition_operator,dtw.workposition.operator,dtw.model_dtw_workposition,dtw.group_dtw_operator,1,0,1,0
+dtw_worktype_operator,dtw.worktype.operator,dtw.model_dtw_worktype,dtw.group_dtw_operator,1,0,0,0
+
+dtw_operator_wizard_operator,dt.operator.wizard.operator,dtw.model_dtw_operator_wizard,,1,1,1,1

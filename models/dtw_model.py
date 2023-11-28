@@ -3,7 +3,10 @@ from odoo import api, fields, models,_
 from odoo.addons import decimal_precision as dp
 from odoo.exceptions import AccessError, UserError, ValidationError
 from passlib.context import CryptContext
-
+import os
+# import pandas as pd
+# from os import path
+# import shutil
 class Workposition(models.Model):
     _name="dtw.workposition"
     _description="工位"
@@ -20,6 +23,7 @@ class WorkmanshipMain(models.Model):
     _name="dtw.workmanship.main"
     _description="工单"
     _rec_name="name"
+    _order="name desc"
 
     name = fields.Char(
         string="工单号",
@@ -33,6 +37,20 @@ class WorkmanshipMain(models.Model):
     user_id = fields.Many2one('res.users', default=lambda self: self.env.user.user_id)
     dispatch = fields.Boolean('可下发的工单',default=False)
     dispatched = fields.Boolean('已经下发的工单',default=False)
+    state = fields.Selection( [('dispatch','下发'),('to_excel', '下载xlsx文件'),('draft','初稿')], 'State',
+                             default='draft')
+    no_workmanship=fields.Boolean('无工单明细',compute='_compute_no_workmanship')
+
+    @api.depends("workmanship_ids")
+    def _compute_no_workmanship(self):
+       for r in self:
+            r.no_workmanship= not len(r.workmanship_ids)                         
+            #根据有没有明细，设置state
+            if r.no_workmanship:
+                r.state='draft'
+            else:
+                r.state='dispatch'
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -57,11 +75,18 @@ class WorkmanshipMain(models.Model):
                         'use_date_range':False
                     })
                 vals['name'] = seq.next_by_code('dtw.workmanship.main.%s' % vals['company_id']) or _("New")
+            # 判断有没有创建明细，设置state    
+            if vals.get('workmanship_ids',False):    
+                vals['state']='dispatch'    
+            else:
+                vals['state']='draft'    
         return super().create(vals_list)
 
+
+
     def update_dispatch(self):
-        active_list=self.env.context['active_ids']
-        active_model=self.env.context['active_model']
+        active_list=self.env.context.get('active_ids',self.ids)
+        active_model=self.env.context.get('active_model',self._name)
         #将所有已经下发的部分设置到dispatched,然后还原dispatch=false
         records=self.env[active_model].search([('dispatch','=',True)])
         for r in records:
@@ -72,24 +97,60 @@ class WorkmanshipMain(models.Model):
         for r in self.env[active_model].browse(active_list):
             r.dispatch=True
 
+        # backinfo = os.system('ping -c 1 -w 1 %s' % 'www.baidu.co')
+        # if backinfo:
+        #     self.to_excel()
+    def operator_choose(self):
+        action = {
+                'name': '选择操作员',
+                'res_model': 'dtw.operator.wizard',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'form',
+                'views': [[self.env.ref('dtw.operator_choose_wizard_form').id, 'form']],
+                'target': 'new',
+            }
+        return action    
+
+    def to_excel(self):
+        action = {
+                'name': '导出xlsx',
+                'res_model': 'dtw.workmanship',
+                'report_type':'xlsx',
+                'type': 'ir.actions.report',
+                "report_name":"dtw.report_workmanship_xlsx",
+                "report_file":"dtw.report_workmanship_xlsx" 
+            }
+        self.state='dispatch'
+        return action
+
 class Workmanship(models.Model):
     _name="dtw.workmanship"
     _description="工单明细"
     _rec_name="name"
+    _order="main_id desc"
+
+    def default_worktype(self):
+        return self.env['dtw.worktype'].search([('name','=','A1M0')]).id
+
     name=fields.Char('工艺号',compute="_compute_name")
     main_id=fields.Many2one('dtw.workmanship.main',string='工单号',ondelete="restrict",index=True)
+    worktype_id=fields.Many2one('dtw.worktype',string='工作模式',ondelete="restrict",index=True,default=default_worktype)
     workposition_id=fields.Many2one('dtw.workposition',string='工位')
-    target_tork=fields.Float(string="目标扭力值",digits='Product Unit of Measure',required="1")
+    target_tork=fields.Float(string="扭力",digits='Product Unit of Measure',required="1")
     tork_unit=fields.Selection([('Nm','Nm'),('ft.lb','ft.lb'),('in.lb','in.lb'),('kg.cm','kg.cm')],default="Nm",string='扭力单位',required="1")
-    min_tork=fields.Float(string='目标最低值',digits='Product Unit of Measure')
-    max_tork=fields.Float(string='目标最大值',digits='Product Unit of Measure')
+    min_tork=fields.Float(string='最小扭力',digits='Product Unit of Measure')
+    max_tork=fields.Float(string='最大扭力',digits='Product Unit of Measure')
     allow=fields.Float(string='误差范围 %')
     remark=fields.Char("说明")
     angle=fields.Float('角度',digits='Product Unit of Measure',default=0)
+    min_angle=fields.Float('最小角度',digits='Product Unit of Measure',default=0)
+    max_angle=fields.Float('最大角度',digits='Product Unit of Measure',default=0)
     barcode = fields.Char('Barcode',compute="_compute_barcode")
     company_id = fields.Many2one('res.company', related="main_id.company_id",store=True)
     dispatch = fields.Boolean('可下发的工单',related='main_id.dispatch',inverse="_inverse_dispatch")
     dispatched = fields.Boolean('已经下发的工单',related='main_id.dispatched',inverse="_inverse_dispatched")
+    operator_id = fields.Many2one('res.users',string='操作员')
+    # main_name=fields.Char('工单名称',related="main_id.name")
     #在明细中的设置，需要设置到工单上
     def _inverse_dispatch(self):
         self.main_id.dispatch=self.dispatch
@@ -111,13 +172,24 @@ class Workmanship(models.Model):
     @api.depends('target_tork','angle')
     def _compute_barcode(self):
         for r in self:
-            r.barcode="T%sU%sA%s@%s" % (str(r.target_tork),r.tork_unit,str(r.angle),str(r.id))
+            r.barcode="M%sT%sU%sTm%sTx%sA%sAm%sAx%s@%s" % (r.worktype_id.name,str(r.target_tork),
+                                                           r.tork_unit,str(r.min_tork),str(r.max_tork),str(r.angle),
+                                                           str(r.min_angle),str(r.max_angle),str(r.id))
         
-    @api.onchange('target_tork','allow')
+    @api.onchange('target_tork','angle','allow')
     def _onchange_target_tork(self):
         if self.target_tork:
             self.min_tork=self.target_tork*(1-self.allow/100)
             self.max_tork=self.target_tork*(1+self.allow/100)
+            self.min_angle=self.angle*(1-self.allow/100)
+            self.max_angle=self.angle*(1+self.allow/100)
+    
+    @api.constrains("target_tork")
+    def _check_torkget_tork(self):
+        for r in self:
+            if not r.target_tork >0:
+                raise models.ValidationError('未设扭矩值！')
+
 
 class Workdata(models.Model):
     _name="dtw.workdata"
@@ -150,6 +222,23 @@ class Workdata(models.Model):
             else:
                 r.flag=False
     
+class Worktype(models.Model):
+    _name="dtw.worktype"
+    _description="工作模式"
+    _sql_constraints = [
+    ('name_uniq',
+    'UNIQUE (name)',
+    '工作模式不能重复!')
+    ]
+    name=fields.Char('模式名称')
+    remark=fields.Char('模式说明')
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.user.company_id)
+
+    def name_get(self):
+        result=[]
+        for record in self:
+            result.append((record.id, u"%s(%s)" % (record.name, record.remark)))
+        return result
 # class Operator(models.Model):
 #     _name="dtw.operator"
 #     _description="人员信息"

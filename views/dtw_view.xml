@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 <data>
-    <record id="workmanship_main_view_form" model="ir.ui.view">
+    <record id="workmanship_main_view_form" model="ir.ui.view" >
         <field name="name">工单配置_form</field>
         <field name="model">dtw.workmanship.main</field>
         <field name="arch" type="xml">
         <form> 
+        <header>
+                <button name="operator_choose" type="object" string="选择操作员并下发" class="oe_highlight" 
+                attrs="{'invisible':['|',('state','=','to_excel'),('state','=','draft')]}" /> 
+                <button name="to_excel" type="object" string="下载excel文件" class="oe_highlight" 
+                attrs="{'invisible':['|',('state','=','dispatch'),('state','=','draft')]}" /> 
+
+        </header>
         <sheet>
+            <field name="state" invisible="1" />
+            <field name="no_workmanship" invisible="1"  />
             <div class="oe_title">
                 <h1>
                     <field name="name" readonly="1"/>
                 </h1>
             </div>
-            <group >
+            <group style="white-space:pre-wrap">
                 <group id="left">
                     <field name="remark" />
                 </group>    
@@ -21,40 +30,46 @@
                 </group>    
             </group>
             <field name="workmanship_ids" >
-            <tree>
-                <field name="workposition_id" />
-                <field name="target_tork"  />
-                <field name="tork_unit" />
-                <field name="min_tork" />
-                <field name="max_tork" />
-                <field name="allow" />
-                <field name="angle" />
-                <field name="remark" />
-                <field name="barcode"  />
-            </tree>
-            <form > 
-                <group >
-                <group id="left">
-                    <field name="tork_unit" />
-                </group>    
-                <group id="right">
-                    <field name="remark" />
-                </group>    
-                </group>
-                <group id="main" string="设置工位数据">
-                <group id="left">
+                <tree>
                     <field name="workposition_id" />
-                    <field name="target_tork" />
-                    <field name="allow"  widget="percentage" />
-                </group>
-                <group id="right">
+                    <field name="worktype_id" />
+                    <field name="target_tork"  />
+                    <field name="tork_unit" />
                     <field name="min_tork" />
                     <field name="max_tork" />
+                    <field name="allow" />
                     <field name="angle" />
-                </group>
-                </group>
-            </form>
-
+                    <field name="min_angle" />
+                    <field name="max_angle" />
+                    <field name="operator_id"  />
+                    <field name="remark" />
+                    <field name="barcode"  />
+                </tree>
+                <form > 
+                    <group >
+                    <group id="left">
+                        <field name="tork_unit" required="1" />
+                        <field name="worktype_id" required="1" />
+                    </group>    
+                    <group id="right">
+                        <field name="remark" />
+                    </group>    
+                    </group>
+                    <group id="main" string="设置工位数据">
+                    <group id="left">
+                        <field name="workposition_id" required="1" />
+                        <field name="target_tork" required="1" />
+                        <field name="angle" />
+                        <field name="allow"  widget="percentage" />
+                    </group>
+                    <group id="right">
+                        <field name="min_tork" />
+                        <field name="max_tork" />
+                        <field name="min_angle" />
+                        <field name="max_angle" />
+                    </group>
+                    </group>
+                </form>  
             </field>
         </sheet>    
         </form>
@@ -78,19 +93,23 @@
         <field name="name">工单明细_tree</field>
         <field name="model">dtw.workmanship</field>
         <field name="arch" type="xml">
-        <tree edit="0" create="0" decoration-info="dispatch" decoration-it="dispatched">
+        <tree edit="0" create="0" decoration-info="dispatch" decoration-it="dispatched" >
             <field name="dispatch" invisible="1" />
             <field name="dispatched" invisible="1" />
             <field name="name" />
             <field name="main_id" />
             <field name="workposition_id" />
+            <field name="worktype_id" />
             <field name="target_tork"  />
             <field name="tork_unit" />
             <field name="min_tork" />
             <field name="max_tork" />
             <field name="allow" />
             <field name="angle" />
+            <field name="min_angle" />
+            <field name="max_angle" />
             <field name="remark" />
+            <!-- <field name="operator_id" /> -->
             <field name="barcode"  />
         </tree>
         </field>
@@ -132,6 +151,7 @@
             <field name="main_id" />
             <field name="workposition_id" />
             <filter string='工单' name="main_id" context="{'group_by': 'main_id'}"/>
+            <filter string='模式' name="worktype_id" context="{'group_by': 'worktype_id'}"/>
             <filter string='工位' name="workposition_id" context="{'group_by': 'workposition_id'}"/>
             <filter string='目标扭矩' name="target_tork" context="{'group_by': 'target_tork'}"/>
             <filter string='目标角度' name="angle" context="{'group_by': 'angle'}"/>
@@ -265,6 +285,33 @@
     <record id="workposition_view_form" model="ir.ui.view">
         <field name="name">工位配置_form</field>
         <field name="model">dtw.workposition</field>
+        <field name="arch" type="xml">
+        <form >
+        <group id="m">
+            <group id="l">
+            <field name="name" />
+            </group>
+            <group id="r">
+            <field name="remark" />
+            </group>
+        </group>    
+        </form>
+        </field>
+    </record>        
+    <record id="worktype_view_list" model="ir.ui.view">
+        <field name="name">工作模式_tree</field>
+        <field name="model">dtw.worktype</field>
+        <field name="arch" type="xml">
+        <tree >
+            <field name="name" />
+            <field name="remark" />
+            <field name="company_id" />
+        </tree>
+        </field>
+    </record>        
+    <record id="worktype_view_form" model="ir.ui.view">
+        <field name="name">工作模式_form</field>
+        <field name="model">dtw.worktype</field>
         <field name="arch" type="xml">
         <form >
         <group id="m">

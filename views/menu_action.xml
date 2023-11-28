@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 <data>
+    <!-- <record id="wizard_test_action" model="ir.actions.act_window">
+        <field name="name">测试</field>
+        <field name="res_model">dtw.operator.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record> -->
     <record id="dtw_data_action" model="ir.actions.act_window">
         <field name="name">工作数据</field>
         <field name="res_model">dtw.workdata</field>
@@ -10,8 +16,8 @@
         <field name="name">工单数据</field>
         <field name="res_model">dtw.workmanship</field>
         <field name="view_mode">tree,form</field>
+        <!-- <field name="views">[(ref('dtw.workmanship_view_list'),'tree'),(ref('dtw.workmanship_view_form'),'form')]</field> -->
         <field name="search_view_id" ref="dtw.workmanship_view_search" />
-        <!-- <field name="views" eval="[(ref('dtw.workmanship_view_list_inherit'),'tree'), (False,'form')]" /> -->
     </record>
     <record id="dtw_workmanship_main_action" model="ir.actions.act_window">
         <field name="name">工单</field>
@@ -28,8 +34,13 @@
         <field name="res_model">dtw.workposition</field>
         <field name="view_mode">tree,form</field>
     </record>
+    <record id="dtw_worktype_action" model="ir.actions.act_window">
+        <field name="name">工作模式</field>
+        <field name="res_model">dtw.worktype</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
-    <menuitem id="dtw_root" name="数字扭力扳手管理" groups="dtw.group_dtw_operator">
+    <menuitem id="dtw_root" name="智能扭矩系统" groups="dtw.group_dtw_operator">
         <menuitem id="dtw_data_menu" name="数据" sequence="10"> 
             <menuitem id="dtw_data" name="工作数据"
                 action="dtw_data_action"
@@ -51,6 +62,10 @@
             /> -->
             <menuitem id="dtw_workposition" name="工位维护"
                 action="dtw_workposition_action"
+                sequence="10"
+            />
+            <menuitem id="dtw_worktype" name="工作模式"
+                action="dtw_worktype_action"
                 sequence="10"
             />
         </menuitem>

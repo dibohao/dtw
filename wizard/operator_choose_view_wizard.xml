@@ -1,0 +1,17 @@
+<odoo>
+<data>
+    <record id="operator_choose_wizard_form" model="ir.ui.view">
+        <field name="name">选择下发的操作人员</field>
+        <field name="model">dtw.operator.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <label for="operator_id" string="选择操作员：" />
+                <field name="operator_id" />
+                <footer>
+                   <button type="object" name="operator_action" string="确认" class="oe_highlight" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</data>
+</odoo>

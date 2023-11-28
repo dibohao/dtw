@@ -42,4 +42,21 @@
            action = model.update_dispatch()
         </field>
     </record>
+    <record id="report_workmanship_xlsx"  model="ir.actions.report">
+        <field name="name">下发工艺清单的xlsx文件</field>
+        <field name="model">dtw.workmanship</field>
+        <field name="report_type">xlsx</field>
+        <field name="report_name">dtw.report_workmanship_xlsx</field>
+        <field name="report_file">dtw.report_workmanship_xlsx</field> 
+        <field name="binding_model_id" ref="dtw.model_dtw_workmanship"/>
+    </record>
+    <!-- <report
+    id="report_workmanship_xlsx"
+    model="dtw.workmanship"
+    string="下发工艺清单的xlsx文件"
+    report_type="xlsx"
+    name="dtw.report_workmanship_xlsx"
+    file="dtw_workmanship"
+    attachment_use="False"
+    /> -->
 </odoo>    
