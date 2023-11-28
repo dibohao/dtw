@@ -7,7 +7,7 @@
     'version': '16.0',
     'website': '',
     'author': 'dibohao',
-    'depends': ['base','report_xlsx'],
+    'depends': ['base'],
     'data': [
         'security/dtw_groups.xml',
         'security/ir.model.access.csv',

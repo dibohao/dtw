@@ -35,7 +35,7 @@
                     <field name="worktype_id" />
                     <field name="target_tork"  />
                     <field name="tork_unit" />
-                    <field name="min_tork" />
+                    <field name="min_tork"  />
                     <field name="max_tork" />
                     <field name="allow" />
                     <field name="angle" />
@@ -63,7 +63,7 @@
                         <field name="allow"  widget="percentage" />
                     </group>
                     <group id="right">
-                        <field name="min_tork" />
+                        <field name="min_tork"   />
                         <field name="max_tork" />
                         <field name="min_angle" />
                         <field name="max_angle" />
@@ -125,6 +125,7 @@
                 <field name="tork_unit" />
             </group>    
             <group id="right">
+                <field name="allow"  widget="percentage" />
                 <field name="remark" />
             </group>    
             </group>
@@ -132,12 +133,14 @@
             <group id="left">
                 <field name="workposition_id" />
                 <field name="target_tork" />
-                <field name="allow"  widget="percentage" />
-            </group>
-            <group id="right">
                 <field name="min_tork" />
                 <field name="max_tork" />
+            </group>
+            <group id="right">
                 <field name="angle" />
+                <field name="min_angle" />
+                <field name="max_angle" />
+                <field name='barcode' />
             </group>
             </group>
         </form>

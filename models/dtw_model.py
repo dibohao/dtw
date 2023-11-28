@@ -4,6 +4,7 @@ from odoo.addons import decimal_precision as dp
 from odoo.exceptions import AccessError, UserError, ValidationError
 from passlib.context import CryptContext
 import os
+import json
 # import pandas as pd
 # from os import path
 # import shutil
@@ -169,13 +170,16 @@ class Workmanship(models.Model):
         for r in self:
             r.name="%s@%s" % (r.workposition_id.name,r.main_id.name)    
 
-    @api.depends('target_tork','angle')
+    @api.depends('target_tork','angle','worktype_id','tork_unit')
     def _compute_barcode(self):
         for r in self:
-            r.barcode="M%sT%sU%sTm%sTx%sA%sAm%sAx%s@%s" % (r.worktype_id.name,str(r.target_tork),
-                                                           r.tork_unit,str(r.min_tork),str(r.max_tork),str(r.angle),
-                                                           str(r.min_angle),str(r.max_angle),str(r.id))
-        
+            # r.barcode="M%sT%sU%sTm%sTx%sA%sAm%sAx%s@%s" % (r.worktype_id.name,str(r.target_tork),
+            #                                                r.tork_unit,str(r.min_tork),str(r.max_tork),str(r.angle),
+            #                                                str(r.min_angle),str(r.max_angle),str(r.id))
+            barcode={'worktype_name':r.worktype_id.name,'target_tork':str(r.target_tork),'tork_unit':r.tork_unit,
+                     'min_tork':str(r.min_tork),'max_tork':str(r.max_tork),'angle':str(r.angle),'min_angle':str(r.min_angle),
+                    'max_angle':str(r.max_angle),'workmanship_id':str(r.id)}
+            r.barcode=json.dumps(barcode)                                           
     @api.onchange('target_tork','angle','allow')
     def _onchange_target_tork(self):
         if self.target_tork:
